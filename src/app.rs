@@ -4,6 +4,7 @@ use leptos_router::*;
 use crate::components::{
     typewriter::TypeWriter,
     editor::Editor,
+
 };
 
 #[component]
@@ -12,6 +13,15 @@ pub fn App() -> impl IntoView {
 
     view! {
         <Stylesheet id="leptos" href="/pkg/write-right.css"/>
+        <Script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/prism.min.js" />
+
+        <Script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/plugins/autoloader/prism-autoloader.min.js" />
+        <Stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism-tomorrow.min.css" />
+        <Script>
+        "
+            window.Prism = window.Prism || {};
+        "
+        </Script>
 
         <Title text="My site"/>
 

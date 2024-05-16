@@ -1,4 +1,5 @@
 use leptos::{component, create_node_ref, create_signal, ev, html, view, IntoView};
+use crate::utils::highlight::highlight_all;
 
 #[component]
 pub fn Editor() -> impl IntoView {
@@ -16,13 +17,14 @@ pub fn Editor() -> impl IntoView {
 
     let handle_input = move |_| {
         set_text(input_ref().unwrap().inner_text());
+        highlight_all();
     };
 
     view! {
         <div
           ref=input_ref
           on:keydown=handle_keydown
-          class="p-8 outline-pink-500"
+          class="p-8 text-left"
           contenteditable
           inner_text=text
           on:input=handle_input
