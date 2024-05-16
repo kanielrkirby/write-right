@@ -1,25 +1,45 @@
-use leptos::*;
+use std::time::Duration;
+
+use leptos::{leptos_dom::logging::console_log, logging::log, *};
 use leptos_meta::*;
 use leptos_router::*;
+use markdown::to_html;
+use wasm_bindgen::{prelude::wasm_bindgen, JsCast};
+use markdown;
+use wasm_bindgen_futures::JsFuture;
+use web_sys::js_sys::Promise;
+
+#[wasm_bindgen(inline_js = "
+export function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+")]
+extern "C" {
+    fn sleep(ms: u32) -> Promise;
+}
+
+pub async fn sleep_ms(ms: u32) {
+    let promise = sleep(ms);
+    let js_future = JsFuture::from(promise);
+    js_future.await.unwrap();
+}
 
 #[component]
 pub fn App() -> impl IntoView {
-    // Provides context that manages stylesheets, titles, meta tags, etc.
     provide_meta_context();
 
     view! {
-        // injects a stylesheet into the document <head>
-        // id=leptos means cargo-leptos will hot-reload this stylesheet
         <Stylesheet id="leptos" href="/pkg/write-right.css"/>
 
-        // sets the document title
-        <Title text="Welcome to Leptos"/>
+        <Title text="My site"/>
 
-        // content for this welcome page
+        <NavBar />
+
         <Router>
-            <main>
+            <main class="flex flex-col overflow-hidden">
                 <Routes>
                     <Route path="" view=HomePage/>
+                    <Route path="/about" view=AboutPage/>
                     <Route path="/*any" view=NotFound/>
                 </Routes>
             </main>
@@ -27,16 +47,80 @@ pub fn App() -> impl IntoView {
     }
 }
 
-/// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
-    // Creates a reactive value to update the button
-    let (count, set_count) = create_signal(0);
-    let on_click = move |_| set_count.update(|count| *count += 1);
+    let (html, set_html) = create_signal("".to_string());
+
+    let input_ref = create_node_ref::<html::Div>();
+
+    let handle_click = move |_e: ev::MouseEvent| {
+        input_ref().unwrap().focus();
+    };
+
+    let handle_update = move |e: ev::KeyboardEvent| {
+        let key = e.key();
+
+        if key == "Enter" {};
+
+        if key == "Backspace" {};
+
+        set_html(markdown::to_html(&input_ref().unwrap().inner_text()));
+    };
 
     view! {
-        <h1>"Welcome to Leptos!"</h1>
-        <button on:click=on_click>"Click Me: " {count}</button>
+        <div
+          ref=input_ref
+          on:keydown=handle_update
+          contenteditable
+          class="hidden"
+        >
+        </div>
+        <div
+          on:click=handle_click
+          class="p-8"
+          inner_html=html
+        >
+        </div>
+    }
+}
+
+#[component]
+fn AboutPage() -> impl IntoView {
+    view! {
+        <div>About!!!</div>
+    }
+}
+
+#[component]
+fn NavBar() -> impl IntoView {
+    view! {
+        <nav class="flex gap-8 items-center p-4">
+            <a class="font-logo text-xl" href="/" aria-label="Home">
+                <TypeWriter text="Write Right".to_string() symbol='▄' interval=50 delay=1000 />
+            </a>
+        </nav>
+    }
+}
+
+#[component]
+fn TypeWriter(text: String, symbol: char, interval: u32, delay: u32) -> impl IntoView {
+    let (content, set_content) = create_signal("".to_string());
+    let text_chars: Vec<char> = text.chars().collect();
+    let text_length = text.len();
+
+    create_effect(move |_| {
+        let text_chars = text_chars.clone();
+        spawn_local(async move {
+            sleep_ms(delay).await;
+            for i in 0..text_length {
+                set_content(text_chars[..=i].iter().collect());
+                sleep_ms(interval).await;
+            };
+        })
+    });
+
+    view! {
+        {move || content().to_string()}{symbol}
     }
 }
 

@@ -1,4 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap");
+
+html, body {
+  height: 100%;
+}
+
 body {
-	font-family: sans-serif;
-	text-align: center;
+  font-family: sans-serif;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
 }

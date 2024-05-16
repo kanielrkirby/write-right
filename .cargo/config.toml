@@ -1,0 +1,15 @@
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]
+
+[target.x86_64-pc-windows-gnu]
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]
+
+[build]
+rustc-wrapper = "sccache"
+
+[env]
+SCCACHE_CACHE_SIZE = "100G"
+CARGO_BUILD_JOBS = "8"
