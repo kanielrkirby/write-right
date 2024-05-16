@@ -8,21 +8,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsCast};
 use markdown;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::js_sys::Promise;
-
-#[wasm_bindgen(inline_js = "
-export function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-")]
-extern "C" {
-    fn sleep(ms: u32) -> Promise;
-}
-
-pub async fn sleep_ms(ms: u32) {
-    let promise = sleep(ms);
-    let js_future = JsFuture::from(promise);
-    js_future.await.unwrap();
-}
+use crate::components::typewriter::TypeWriter;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -95,32 +81,10 @@ fn AboutPage() -> impl IntoView {
 fn NavBar() -> impl IntoView {
     view! {
         <nav class="flex gap-8 items-center p-4">
-            <a class="font-logo text-xl" href="/" aria-label="Home">
-                <TypeWriter text="Write Right".to_string() symbol='▄' interval=50 delay=1000 />
+            <a href="/" aria-label="Home">
+                <TypeWriter class="text-xl" text="Write Right" />
             </a>
         </nav>
-    }
-}
-
-#[component]
-fn TypeWriter(text: String, symbol: char, interval: u32, delay: u32) -> impl IntoView {
-    let (content, set_content) = create_signal("".to_string());
-    let text_chars: Vec<char> = text.chars().collect();
-    let text_length = text.len();
-
-    create_effect(move |_| {
-        let text_chars = text_chars.clone();
-        spawn_local(async move {
-            sleep_ms(delay).await;
-            for i in 0..text_length {
-                set_content(text_chars[..=i].iter().collect());
-                sleep_ms(interval).await;
-            };
-        })
-    });
-
-    view! {
-        {move || content().to_string()}{symbol}
     }
 }
 

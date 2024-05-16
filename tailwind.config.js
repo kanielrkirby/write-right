@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'logo': ['Cutive Mono', 'monospace'],
+        'mono': ['Cutive Mono', 'monospace'],
       }
     },
   },
