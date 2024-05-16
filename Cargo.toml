@@ -18,7 +18,7 @@ leptos_router = { version = "0.6.11", features = ["nightly"] }
 wasm-bindgen = "=0.2.92"
 markdown = "1.0.0-alpha.17"
 wasm-bindgen-futures = "0.4.42"
-web-sys = "0.3.69"
+web-sys = { version = "0.3.69", features = ["Document", "Window", "Selection"] }
 
 [features]
 csr = ["leptos/csr", "leptos_meta/csr", "leptos_router/csr"]

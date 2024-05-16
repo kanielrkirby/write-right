@@ -1,14 +1,10 @@
-use std::time::Duration;
-
-use leptos::{leptos_dom::logging::console_log, logging::log, *};
+use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use markdown::to_html;
-use wasm_bindgen::{prelude::wasm_bindgen, JsCast};
-use markdown;
-use wasm_bindgen_futures::JsFuture;
-use web_sys::js_sys::Promise;
-use crate::components::typewriter::TypeWriter;
+use crate::components::{
+    typewriter::TypeWriter,
+    editor::Editor,
+};
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -35,38 +31,8 @@ pub fn App() -> impl IntoView {
 
 #[component]
 fn HomePage() -> impl IntoView {
-    let (html, set_html) = create_signal("".to_string());
-
-    let input_ref = create_node_ref::<html::Div>();
-
-    let handle_click = move |_e: ev::MouseEvent| {
-        input_ref().unwrap().focus();
-    };
-
-    let handle_update = move |e: ev::KeyboardEvent| {
-        let key = e.key();
-
-        if key == "Enter" {};
-
-        if key == "Backspace" {};
-
-        set_html(markdown::to_html(&input_ref().unwrap().inner_text()));
-    };
-
     view! {
-        <div
-          ref=input_ref
-          on:keydown=handle_update
-          contenteditable
-          class="hidden"
-        >
-        </div>
-        <div
-          on:click=handle_click
-          class="p-8"
-          inner_html=html
-        >
-        </div>
+        <Editor />
     }
 }
 
