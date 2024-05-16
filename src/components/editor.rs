@@ -30,6 +30,6 @@ pub fn Editor() -> impl IntoView {
           on:input=handle_input
         >
         </div>
-        <div inner_html=html />
+        <div class="markdown-body" inner_html=html />
     }
 }

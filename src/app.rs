@@ -16,6 +16,8 @@ pub fn App() -> impl IntoView {
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/prism.min.js" />
 
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/plugins/autoloader/prism-autoloader.min.js" />
+        <Stylesheet href="https://github.com/sindresorhus/github-markdown-css/blob/main/github-markdown.css" />
+        <Stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown-light.min.css" />
         <Stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism-tomorrow.min.css" />
         <Script>
         "
